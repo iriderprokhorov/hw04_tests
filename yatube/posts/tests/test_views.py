@@ -182,7 +182,8 @@ class PostModelTest(TestCase):
         self.assertEqual(len(response.context["page_obj"]), 10)
 
     # Проверка создания поста с указанием группы на главной,на страницы
-    # группы и в профайле уже протестирована. Проверим что пост не попал в чужую группу
+    # группы и в профайле уже протестирована. Проверим что пост не попал в
+    # чужую группу
     def test_post_create_with_group_show_correct_context(self):
         """Создание поста с указанием группы."""
         response = self.guest_client.get(
