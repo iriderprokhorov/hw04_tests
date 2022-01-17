@@ -1,12 +1,9 @@
-# deals/tests/test_views.py
+from django import forms
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
-from django import forms
-
-from posts.models import Post, Group
-
-User = get_user_model()
+from posts.models import Group, Post, User
 
 
 class PostModelTest(TestCase):
@@ -15,7 +12,7 @@ class PostModelTest(TestCase):
         super().setUpClass()
         cls.posts_obj = []
         cls.user = User.objects.create_user(username="auth")
-        # group-test1
+        # test-group1
         cls.group1 = Group.objects.create(
             title="test-group1",
             slug="test-slug1",
@@ -53,7 +50,6 @@ class PostModelTest(TestCase):
         # Создаем неавторизованный клиент
         self.guest_client = Client()
         # Создаем авторизованый клиент
-        # self.user = PostModelTest.user
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
         self.author_post = Post.author
@@ -165,21 +161,27 @@ class PostModelTest(TestCase):
     def test_index_page_contains_31(self):
         """На страницу index выводится по 10 постов"""
         response = self.client.get(reverse("posts:index"))
-        self.assertEqual(len(response.context["page_obj"]), 10)
+        self.assertEqual(
+            len(response.context["page_obj"]), settings.DEFAULT_POSTS_ON_PAGE
+        )
 
     def test_group_list_page_contains_15(self):
         """На страницу group_list выводится 10 постов"""
         response = self.client.get(
             reverse("posts:group_list", kwargs={"slug": "test-slug1"})
         )
-        self.assertEqual(len(response.context["page_obj"]), 10)
+        self.assertEqual(
+            len(response.context["page_obj"]), settings.DEFAULT_POSTS_ON_PAGE
+        )
 
     def test_profile_page_contains_31(self):
         """На страницу profile выводится 10 постов"""
         response = self.client.get(
             reverse("posts:profile", kwargs={"username": "auth"})
         )
-        self.assertEqual(len(response.context["page_obj"]), 10)
+        self.assertEqual(
+            len(response.context["page_obj"]), settings.DEFAULT_POSTS_ON_PAGE
+        )
 
     # Проверка создания поста с указанием группы на главной,на страницы
     # группы и в профайле уже протестирована. Проверим что пост не попал в

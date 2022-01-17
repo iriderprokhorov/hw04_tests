@@ -1,10 +1,8 @@
-from posts.forms import PostForm
-from posts.models import Post, Group
 from django.contrib.auth import get_user_model
-from django.urls import reverse
 from django.test import Client, TestCase
-
-User = get_user_model()
+from django.urls import reverse
+from posts.forms import PostForm
+from posts.models import Group, Post, User
 
 
 class PostFormTests(TestCase):
@@ -45,7 +43,6 @@ class PostFormTests(TestCase):
         # Посчитали количество постов после
         self.assertEqual(Post.objects.count(), posts_count + 1)
         # Проверили, что пост сохранился в бд
-        print("amount posts", posts_count)
         self.assertTrue(
             Post.objects.filter(
                 text="test-post-create", group=self.group
@@ -68,7 +65,7 @@ class PostFormTests(TestCase):
         # Проверили редирект
         self.assertRedirects(
             response,
-            reverse("posts:post_detail", kwargs={"post_id": "1"}),
+            reverse("posts:post_detail", kwargs={"post_id": self.post.pk}),
         )
         # Проверили, что пост обновлен
         self.assertTrue(
