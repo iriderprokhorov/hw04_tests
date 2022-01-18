@@ -4,6 +4,8 @@ from django.test import Client, TestCase
 from django.urls import reverse
 from posts.models import Group, Post, User
 
+# импорты делал isort. Что не правильно isort делает?
+
 
 class PostModelTest(TestCase):
     @classmethod
@@ -46,12 +48,11 @@ class PostModelTest(TestCase):
         cls.posts_obj.append(Post(author=cls.user, text="test-text31"))
 
     def setUp(self):
-        # Создаем неавторизованный клиент
+        # Create unauthorized_client
         self.guest_client = Client()
-        # Создаем авторизованый клиент
+        # Create authorized_client
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
-        self.author_post = Post.author
 
     # Проверяем используемые шаблоны
     def test_pages_uses_correct_template(self):
@@ -113,7 +114,7 @@ class PostModelTest(TestCase):
 
     def test_post_edit_show_correct_context(self):
         """Шаблон post_edit с правильным контекстом."""
-        response = self.guest_client.get(
+        response = self.authorized_client.get(
             reverse("posts:post_edit", kwargs={"pk": "1"})
         )
         self.assertEqual(str(response.context["post"]), "test-text1")
@@ -195,4 +196,3 @@ class PostModelTest(TestCase):
             self.assertEqual(
                 str(response.context["post_list"][i].group), "test-group2"
             )
-            # print(str(response.context["post_list"][i].group))

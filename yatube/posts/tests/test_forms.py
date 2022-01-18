@@ -3,6 +3,8 @@ from django.urls import reverse
 from posts.forms import PostForm
 from posts.models import Group, Post, User
 
+# импорты делал isort. Что не правильно isort делает?
+
 
 class PostFormTests(TestCase):
     @classmethod
@@ -56,7 +58,7 @@ class PostFormTests(TestCase):
         }
         # Отправили POST-запрос
         response = self.authorized_client.post(
-            reverse("posts:post_edit", kwargs={"pk": "1"}),
+            reverse("posts:post_edit", kwargs={"pk": self.post.pk}),
             data=form_data,
             follow=True,
             is_edit=True,

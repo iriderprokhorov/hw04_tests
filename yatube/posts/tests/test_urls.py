@@ -76,8 +76,6 @@ class PostModelTest(TestCase):
 
     def test_post_id(self):
         """Страница post_id доступна любому пользователю."""
-        print("TUTA")
-        print(self.post.pk)
         response = self.guest_client.get(
             constants.POSTS_PAGE + str(self.post.pk) + constants.MAIN_PAGE
         )

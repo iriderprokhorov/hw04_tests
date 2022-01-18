@@ -81,6 +81,7 @@ def post_create(request):
     return render(request, "posts/create_post.html", {"form": form})
 
 
+@login_required
 def post_edit(request, pk):
     post = get_object_or_404(Post, pk=pk)
     is_edit = True
