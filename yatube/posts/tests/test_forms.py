@@ -30,20 +30,20 @@ class PostFormTests(TestCase):
 
     def test_create_post(self):
         """Валидная форма создает запись в Post"""
-        # Посчитали количество постов до
+        # Calculate post amount before add test post
         posts_count = Post.objects.count()
         form_data = {"text": "test-post-create", "group": self.group.pk}
-        # Отправили POST-запрос
+        # Send POST request
         response = self.authorized_client.post(
             reverse("posts:post_create"), data=form_data, follow=True
         )
-        # Проверили редирект
+        # Check redirect
         self.assertRedirects(
             response, reverse("posts:profile", kwargs={"username": "auth"})
         )
-        # Посчитали количество постов после
+        # Calculate post amount after added test post
         self.assertEqual(Post.objects.count(), posts_count + 1)
-        # Проверили, что пост сохранился в бд
+        # Check save post to database
         self.assertTrue(
             Post.objects.filter(
                 text="test-post-create", group=self.group
@@ -56,19 +56,19 @@ class PostFormTests(TestCase):
             "text": "test-post-edit",
             "group": self.group.pk,
         }
-        # Отправили POST-запрос
+        # Send POST request
         response = self.authorized_client.post(
             reverse("posts:post_edit", kwargs={"pk": self.post.pk}),
             data=form_data,
             follow=True,
             is_edit=True,
         )
-        # Проверили редирект
+        # Check redirect
         self.assertRedirects(
             response,
             reverse("posts:post_detail", kwargs={"post_id": self.post.pk}),
         )
-        # Проверили, что пост обновлен
+        # Check that post updated
         self.assertTrue(
             Post.objects.filter(
                 text="test-post-edit", id="1", group=self.group

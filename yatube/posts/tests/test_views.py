@@ -54,7 +54,7 @@ class PostModelTest(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
-    # Проверяем используемые шаблоны
+    # Check using template
     def test_pages_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
         templates_pages_names = {
@@ -78,7 +78,7 @@ class PostModelTest(TestCase):
                 response = self.authorized_client.get(reverse_name)
                 self.assertTemplateUsed(response, template)
 
-    # Проверка контекста страниц
+    # Check page context
     def test_home_page_show_correct_context(self):
         """Шаблон home сформирован с правильным контекстом."""
         response = self.guest_client.get(reverse("posts:index"))
@@ -120,44 +120,30 @@ class PostModelTest(TestCase):
         self.assertEqual(str(response.context["post"]), "test-text1")
         self.assertEqual(str(response.context["is_edit"]), "True")
         self.assertEqual(str(response.context["post"].pk), "1")
-        # Словарь ожидаемых типов полей формы:
-        # указываем, объектами какого класса должны быть поля формы
         form_fields = {
             # При создании формы поля модели типа TextField
             # преобразуются в CharField с виджетом forms.Textarea
             "text": forms.fields.CharField,
             "group": forms.fields.ChoiceField,
         }
-        # Проверяем, что типы полей формы в словаре context
-        # соответствуют ожиданиям
         for value, expected in form_fields.items():
             with self.subTest(value=value):
                 form_field = response.context["form"].fields[value]
-                # Проверяет, что поле формы является экземпляром
-                # указанного класса
                 self.assertIsInstance(form_field, expected)
 
     def test_post_create_show_correct_context(self):
         """Шаблон post_create с правильным контекстом."""
         response = self.authorized_client.get(reverse("posts:post_create"))
-        # Словарь ожидаемых типов полей формы:
-        # указываем, объектами какого класса должны быть поля формы
         form_fields = {
-            # При создании формы поля модели типа TextField
-            # преобразуются в CharField с виджетом forms.Textarea
             "text": forms.fields.CharField,
             "group": forms.fields.ChoiceField,
         }
-        # Проверяем, что типы полей формы в словаре context
-        # соответствуют ожиданиям
         for value, expected in form_fields.items():
             with self.subTest(value=value):
                 form_field = response.context["form"].fields[value]
-                # Проверяет, что поле формы является экземпляром
-                # указанного класса
                 self.assertIsInstance(form_field, expected)
 
-    # Проверяем паджинатор
+    # Check paginator
     def test_index_page_contains_31(self):
         """На страницу index выводится по 10 постов"""
         response = self.client.get(reverse("posts:index"))
@@ -183,16 +169,13 @@ class PostModelTest(TestCase):
             len(response.context["page_obj"]), settings.DEFAULT_POSTS_ON_PAGE
         )
 
-    # Проверка создания поста с указанием группы на главной,на страницы
-    # группы и в профайле уже протестирована. Проверим что пост не попал в
-    # чужую группу
+    # Check post is not other group
     def test_post_create_with_group_show_correct_context(self):
         """Создание поста с указанием группы."""
         response = self.guest_client.get(
             reverse("posts:group_list", kwargs={"slug": "test-slug2"})
         )
         for i in range(0, len(response.context["post_list"])):
-            # self.assertEqual(str(obj.text), "test-text1")
             self.assertEqual(
                 str(response.context["post_list"][i].group), "test-group2"
             )

@@ -22,20 +22,19 @@ class PostModelTest(TestCase):
         )
 
     def setUp(self):
-        # Создаем неавторизованный клиент
+        # create guest client
         self.guest_client = Client()
-        # Создаем авторизованый клиент
-        # self.user = PostModelTest.user
+        # create authorized client
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
-        self.author_post = Post.author
 
-    # Проверяем общедоступные страницы
+    # Check page home availability
     def test_homepage(self):
         """Страница homepage/ доступна любому пользователю."""
         response = self.guest_client.get(constants.MAIN_PAGE)
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
+    # Check page about availability
     def test_about(self):
         """Страница about/author доступна любому пользователю."""
         response = self.guest_client.get(constants.ABOUT_AUTHOR_PAGE)
@@ -45,6 +44,7 @@ class PostModelTest(TestCase):
             "Page about/author/ not founded",
         )
 
+    # Check page tech availability
     def test_tech(self):
         """Страница about/tech доступна любому пользователю."""
         response = self.guest_client.get(constants.ABOUT_TECH_PAGE)
@@ -52,6 +52,7 @@ class PostModelTest(TestCase):
             response.status_code, HTTPStatus.OK, "Page about/tech/ not founded"
         )
 
+    # Check page group availability
     def test_group_slug(self):
         """Страница group_slug доступна любому пользователю."""
         response = self.guest_client.get(
@@ -61,6 +62,7 @@ class PostModelTest(TestCase):
             response.status_code, HTTPStatus.OK, "Page group/slug not founded"
         )
 
+    # Check page profile availability
     def test_profile_username(self):
         """Страница profile_username доступна любому пользователю."""
         response = self.guest_client.get(
@@ -74,6 +76,7 @@ class PostModelTest(TestCase):
             "Page profile/username not founded",
         )
 
+    # Check page post availability
     def test_post_id(self):
         """Страница post_id доступна любому пользователю."""
         response = self.guest_client.get(
@@ -85,7 +88,7 @@ class PostModelTest(TestCase):
             "Page posts/post_id not founded",
         )
 
-    # Проверяем доступность страниц для автора
+    # Check page edit post availability
     def test_post_id_edit(self):
         """Страница post_id_edit доступна author post."""
         response = self.author_post.get(
@@ -97,7 +100,7 @@ class PostModelTest(TestCase):
             "Page posts/post_id_edit not founded",
         )
 
-    # Проверяем доступность страниц для автора
+    # Check page create post availability
     def test_create(self):
         """Страница create доступна authorized client."""
         response = self.authorized_client.get(constants.CREATE_PAGE)
@@ -105,7 +108,7 @@ class PostModelTest(TestCase):
             response.status_code, HTTPStatus.OK, "Page create not founded"
         )
 
-    # Проверяем unexisting page
+    # Check unexisting page
     def test_post_id_edit(self):
         """Страница non exist."""
         response = self.authorized_client.get(constants.UNEXISTING_PAGE)
@@ -113,7 +116,7 @@ class PostModelTest(TestCase):
             response.status_code, HTTPStatus.OK.NOT_FOUND, "Page not founded "
         )
 
-    # Проверка вызываемых шаблонов для каждого адреса
+    # Check called template for each request
     def test_urls_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
         templates_url_names = {
