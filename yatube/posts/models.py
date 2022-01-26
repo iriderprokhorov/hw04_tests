@@ -33,6 +33,7 @@ class Post(models.Model):
         related_name="posts",
         verbose_name="автор",
     )
+    image = models.ImageField("Картинка", upload_to="posts/", blank=True)
 
     class Meta:
         verbose_name = "Posts, it will be shown in admin panel"
@@ -43,3 +44,43 @@ class Post(models.Model):
 
     def __str__(self):
         return self.text
+
+
+class Comment(models.Model):
+    post = models.ForeignKey(
+        Post,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="comments",
+        verbose_name="комментарии",
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="comments",
+        verbose_name="автор",
+    )
+    text = models.TextField("текст комментария")
+    created = models.DateTimeField("дата комментария", auto_now_add=True)
+
+    class Meta:
+        ordering = ("created",)
+
+    def __str__(self):
+        return self.text
+
+
+class Follow(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="follower",
+        verbose_name="кто подписывается",
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="following",
+        verbose_name="на кого подписываютс",
+    )

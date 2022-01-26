@@ -134,3 +134,13 @@ EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 DEFAULT_POSTS_ON_PAGE = 10
 
 CSRF_FAILURE_VIEW = "core.views.csrf_failure"
+
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    }
+}

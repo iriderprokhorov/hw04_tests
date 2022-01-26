@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Post
+from .models import Comment, Post
 
 
 class PostForm(forms.ModelForm):
@@ -9,10 +9,12 @@ class PostForm(forms.ModelForm):
         fields = (
             "text",
             "group",
+            "image",
         )
         help_texts = {
-            "text": "something about text",
-            "group": "something about group",
+            "text": "Text for new post",
+            "group": "Group's post",
+            "image": "pickup the picture",
         }
 
     def clean_text(self):
@@ -20,3 +22,9 @@ class PostForm(forms.ModelForm):
         if not data:
             raise forms.ValidationError("Please fill empty field")
         return data
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ("text",)
